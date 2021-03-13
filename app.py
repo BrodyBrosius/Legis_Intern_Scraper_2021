@@ -2,6 +2,7 @@
 from selenium import webdriver
 
 def parseAddress(address):
+    print(address)
     length = len(address)
     userStreetAddress = ''
     userCity = ''
@@ -10,7 +11,24 @@ def parseAddress(address):
     for i, character in enumerate(address):
         if character == ',':
             userStreetAddress = (address[0:i])
+            address = (address[i+1:length])
             print(userStreetAddress)
+            break
+    for k, character in enumerate(address):
+        if character == ',':
+            userCity = (address[0:k])
+            address = (address[k+1:length])
+            print(userCity)
+            break
+    for x, character in enumerate(address):
+        if character == ',':
+            userState = (address[0:x])
+            address = (address[x+1:length])
+            print(userState)
+            break
+    userZipCode = address
+    print(userZipCode)
+
 
 
 
