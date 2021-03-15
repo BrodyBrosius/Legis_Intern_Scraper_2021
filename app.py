@@ -11,25 +11,38 @@ class MainApp:
         self.userZipCode = ''
         self.appStart()
 
-    def parseAddress(self, address):
+    def parseAddress(self,address):
         length = len(address)
+        addressArray = []
+        k = 0
         for i, character in enumerate(address):
+            k = k+1
             if character == ',':
-                self.userStreetAddress = (address[0:i])
-                address = (address[i + 1:length])
+                newAddressComponent = (address[0:k-1])
+                addressArray.append(newAddressComponent)
+                address = (address[k:length])
+                length = len(address)
+                k=0
+            if(len(addressArray) == 3):
+                addressArray.append(address)
                 break
-        for k, character in enumerate(address):
-            if character == ',':
-                self.userCity = (address[0:k])
-                address = (address[k + 1:length])
-                break
-        for x, character in enumerate(address):
-            if character == ',':
-                self.userState = (address[0:x])
-                address = (address[x + 1:length])
-                break
-        self.userZipCode = address
-        int(self.userZipCode)
+        self.removeSpacesFromAddressArray(addressArray)
+        return addressArray
+
+    def removeSpacesFromAddressArray(self,addressArray): #Removes spaces after commas between segments of the address
+        for k, element in enumerate(addressArray):
+            index = 0
+            for index, item in enumerate(element):
+                if(index == 0 and item == " "):
+                    replacementString = ''
+                    for i in range(1,len(element)):
+                        replacementString = replacementString + element[i]
+                    addressArray.remove(element)
+                    addressArray.insert(k,replacementString)
+
+
+
+
 
 
 
@@ -56,9 +69,12 @@ class MainApp:
 
     def appStart(self):
         print("Welcome to Find Your Reps!")
-        userAddress = input("Please input your address. For example: 555 Example Drive, Big Town, GA, 12345")
-        MainApp.parseAddress(self, userAddress)
-        MainApp.findFedRep(self)
+        userAddress = input("Please input your address. For example: 555 Example Drive, Big Town, Georgia, 12345")
+        addressArray = []
+        addressArray = MainApp.parseAddress(self, userAddress)
+        for i in addressArray:
+            print(i)
+        #MainApp.findFedRep(self)
 
 
 
