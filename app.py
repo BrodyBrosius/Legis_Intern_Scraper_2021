@@ -8,6 +8,7 @@ class MainApp:
         self.userStreetAddress = ''
         self.userCity = ''
         self.userState = ''
+        self.userStatePostalCode = ''
         self.userZipCode = ''
         self.appStart()
 
@@ -40,11 +41,18 @@ class MainApp:
                     addressArray.remove(element)
                     addressArray.insert(k,replacementString)
 
+    def defineAddressVariables(self, addressArray):
+            self.userStreetAddress = addressArray[0]
+            self.userCity = addressArray[1]
+            self.userState = addressArray[2]
+            self.userZipCode = addressArray[3]
 
-
-
-
-
+    def editDeliveredRepString(self,text):
+        for index, item in enumerate(text):
+            if (item == '('):
+                text = (text[0:index-1])
+                break
+        return text
 
 
 
@@ -60,11 +68,12 @@ class MainApp:
         findCity = web.find_element_by_xpath('//*[@id="city"]')
         findCity.send_keys(self.userCity)
         stateDropDown = Select(web.find_element_by_id("state"))
-        stateDropDown.select_by_visible_text("Georgia")
+        stateDropDown.select_by_visible_text(self.userState)
         finalSubmitButton = web.find_element_by_xpath('/html/body/div[2]/div/div[2]/section/div/div[2]/div[1]/div[1]/div[1]/form/div[3]/input')
         finalSubmitButton.click()
         userFederalRep = web.find_element_by_class_name("ext")
-        print(userFederalRep.get_attribute("text"))
+        repDeliveredString = userFederalRep.get_attribute("text")
+        print("Your Representative in the U.S. House of Representatives is: " + self.editDeliveredRepString(repDeliveredString))
 
 
     def appStart(self):
@@ -72,9 +81,9 @@ class MainApp:
         userAddress = input("Please input your address. For example: 555 Example Drive, Big Town, Georgia, 12345")
         addressArray = []
         addressArray = MainApp.parseAddress(self, userAddress)
-        for i in addressArray:
-            print(i)
-        #MainApp.findFedRep(self)
+        self.defineAddressVariables(addressArray)
+        MainApp.findFedRep(self)
+
 
 
 
