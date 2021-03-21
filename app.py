@@ -1,6 +1,7 @@
 # import libraries
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+import time
 
 
 class MainApp:
@@ -10,6 +11,60 @@ class MainApp:
         self.userState = ''
         self.userStatePostalCode = ''
         self.userZipCode = ''
+        self.StatePostalCodeDict = dict(
+            {'AL': 'Alabama',
+             'AK': 'Alaska',
+             'AZ': 'Arizona',
+             'AR': 'Arkansas',
+             'CA': 'California',
+             'CO': 'Colorado',
+             'CT': 'Conneticut',
+             'DE': 'Delaware',
+             'DC': 'District of Columbia',
+             'FL': 'Florida',
+             'GA': 'Georgia',
+             'HI': 'Hawaii',
+             'ID': 'Idaho',
+             'IL': 'Illinois',
+             'IN': 'Indiana',
+             'IA': 'Iowa',
+             'KS': 'Kansas',
+             'KY': 'Kentucky',
+             'LA': 'Louisiana',
+             'ME': 'Maine',
+             'MD': 'Maryland',
+             'MA': 'Massachusetts',
+             'MI': 'Michigan',
+             'MN': 'Minnesota',
+             'MS': 'Mississippi',
+             'MO': 'Missouri',
+             'MT': 'Montana',
+             'NE': 'Nebraska',
+             'NV': 'Nevada',
+             'NH': 'New Hampshire',
+             'NJ': 'New Jersey',
+             'NM': 'New Mexico',
+             'NY': 'New York',
+             'NC': 'North Carolina',
+             'ND': 'North Dakota',
+             'OH': 'Ohia',
+             'OK': 'Oklahoma',
+             'OR': 'Oregon',
+             'PA': 'Pennsylvania',
+             'PR': 'Puerto Rico',
+             'RI': 'Rhode Island',
+             'SC': 'South Carolina',
+             'SD': 'South Dakota',
+             'TN': 'Tennessee',
+             'TX': 'Texas',
+             'UT': 'Utah',
+             'VT': 'Vermont',
+             'VA': 'Virgina',
+             'VI': 'Virgin Islands',
+             'WA': 'Washington',
+             'WI': 'Wisconsin',
+             'WY': 'Wyoming',
+             })
         self.appStart()
 
     def parseAddress(self,address):
@@ -44,7 +99,10 @@ class MainApp:
     def defineAddressVariables(self, addressArray):
             self.userStreetAddress = addressArray[0]
             self.userCity = addressArray[1]
-            self.userState = addressArray[2]
+            if(len(addressArray[2]) == 2):
+                self.userState = self.StatePostalCodeDict.get(addressArray[2])
+            else:
+                self.userState = addressArray[2]
             self.userZipCode = addressArray[3]
 
     def editDeliveredRepString(self,text):
@@ -55,9 +113,9 @@ class MainApp:
         return text
 
 
-
     def findFedRep(self):
         web = webdriver.Firefox()
+        web.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         web.get('https://www.house.gov/representatives/find-your-representative')
         findZip = web.find_element_by_xpath('//*[@id="Find_Rep_by_Zipcode"]')
         findZip.send_keys(self.userZipCode)
